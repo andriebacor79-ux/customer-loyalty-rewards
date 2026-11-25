@@ -1,0 +1,1754 @@
+{
+  "info": {
+    "name": "Loyalty v2 - Activities 3-6 aligned",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "27 routes, complete customer/reward CRUD, owner checks, Staff/Manager roles, accounts, ledger and email logs. Run in order. Set managerEmail/managerPassword locally. Pending email means queued, not sent."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1"
+    },
+    {
+      "key": "managerEmail",
+      "value": "manager@example.test"
+    },
+    {
+      "key": "managerPassword",
+      "value": ""
+    },
+    {
+      "key": "runId",
+      "value": ""
+    },
+    {
+      "key": "demoPassword",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "staffToken",
+      "value": ""
+    },
+    {
+      "key": "customerToken",
+      "value": ""
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if(pm.info.requestName.startsWith('01 -')){pm.collectionVariables.set('runId',Date.now().toString());pm.collectionVariables.set('demoPassword',pm.variables.replaceIn('Demo-{{$guid}}'));}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Protected route without token",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/customers",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401',()=>pm.response.to.have.status(401));",
+              "pm.test('Standard error format',()=>{const b=pm.response.json();pm.expect(b.success).to.eql(false);pm.expect(b.errors).to.be.an('array');pm.expect(b.timestamp).to.be.a('string');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Public reward catalog",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/rewards",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Manager login",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/auth/login",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{managerEmail}}\",\n  \"password\": \"{{managerPassword}}\",\n  \"accountType\": \"employee\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "if(pm.response.code===200)pm.collectionVariables.set('token',pm.response.json().access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Current manager",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/auth/me",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Create staff",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/employees",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Demo\",\n  \"lastName\": \"Cashier\",\n  \"email\": \"staff-{{runId}}@example.test\",\n  \"password\": \"{{demoPassword}}\",\n  \"role\": \"Staff\",\n  \"dateHired\": \"2026-01-01\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201',()=>pm.response.to.have.status(201));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Staff login",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/auth/login",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"staff-{{runId}}@example.test\",\n  \"password\": \"{{demoPassword}}\",\n  \"accountType\": \"employee\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "if(pm.response.code===200)pm.collectionVariables.set('staffToken',pm.response.json().access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - List employees",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/employees",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 - Staff cannot list employees",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/employees",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{staffToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 403',()=>pm.response.to.have.status(403));",
+              "pm.test('Standard error format',()=>{const b=pm.response.json();pm.expect(b.success).to.eql(false);pm.expect(b.errors).to.be.an('array');pm.expect(b.timestamp).to.be.a('string');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 - Public customer registration",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/customers",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Demo\",\n  \"lastName\": \"Member\",\n  \"email\": \"customer-{{runId}}@example.test\",\n  \"password\": \"{{demoPassword}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201',()=>pm.response.to.have.status(201));",
+              "if(pm.response.code===201)pm.collectionVariables.set('customerId',pm.response.json().customerId);",
+              "if(pm.response.code===201)pm.collectionVariables.set('accountId',pm.response.json().accountId);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 - Customer login",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/auth/login",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"customer-{{runId}}@example.test\",\n  \"password\": \"{{demoPassword}}\",\n  \"accountType\": \"customer\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "if(pm.response.code===200)pm.collectionVariables.set('customerToken',pm.response.json().access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 - Search customers",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/customers?search=Demo&page=1&limit=10",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 - Read own profile",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/customers/{{customerId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 - Update own profile",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/customers/{{customerId}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phoneNumber\": \"09123456789\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14 - Invalid profile rejected",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/customers/{{customerId}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phoneNumber\": \"invalid\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400',()=>pm.response.to.have.status(400));",
+              "pm.test('Standard error format',()=>{const b=pm.response.json();pm.expect(b.success).to.eql(false);pm.expect(b.errors).to.be.an('array');pm.expect(b.timestamp).to.be.a('string');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "15 - List active accounts",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/loyalty-accounts?accountStatus=Active",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "16 - Read own account",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/loyalty-accounts/{{accountId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "17 - Suspend account",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/loyalty-accounts/{{accountId}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountStatus\": \"Suspended\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "18 - Suspended account cannot earn",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/points-transactions",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{staffToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountId\": {{accountId}},\n  \"transactionType\": \"Earn\",\n  \"purchaseAmount\": 1500\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 409',()=>pm.response.to.have.status(409));",
+              "pm.test('Standard error format',()=>{const b=pm.response.json();pm.expect(b.success).to.eql(false);pm.expect(b.errors).to.be.an('array');pm.expect(b.timestamp).to.be.a('string');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "19 - Reactivate account",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/loyalty-accounts/{{accountId}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountStatus\": \"Active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "20 - Earn PHP1500 equals 150 points",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/points-transactions",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{staffToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountId\": {{accountId}},\n  \"transactionType\": \"Earn\",\n  \"purchaseAmount\": 1500\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201',()=>pm.response.to.have.status(201));",
+              "if(pm.response.code===201)pm.collectionVariables.set('transactionId',pm.response.json().transactionId);",
+              "pm.test('150 points earned',()=>pm.expect(pm.response.json().points).to.eql(150));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "21 - Read own points transaction",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/points-transactions/{{transactionId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "22 - Read own ledger history",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/loyalty-accounts/{{accountId}}/points-transactions?transactionType=Earn",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "23 - Reject insufficient adjustment",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/points-transactions",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{staffToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountId\": {{accountId}},\n  \"transactionType\": \"Adjust\",\n  \"points\": -151\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 409',()=>pm.response.to.have.status(409));",
+              "pm.test('Standard error format',()=>{const b=pm.response.json();pm.expect(b.success).to.eql(false);pm.expect(b.errors).to.be.an('array');pm.expect(b.timestamp).to.be.a('string');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "24 - Create reward",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/rewards",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rewardName\": \"Voucher-{{runId}}\",\n  \"description\": \"Demo voucher\",\n  \"pointsRequired\": 100,\n  \"stockQuantity\": 2,\n  \"reorderLevel\": 1,\n  \"rewardStatus\": \"Available\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201',()=>pm.response.to.have.status(201));",
+              "if(pm.response.code===201)pm.collectionVariables.set('rewardId',pm.response.json().rewardId);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "25 - Filter sort rewards",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/rewards?rewardStatus=Available&sortBy=pointsRequired&sortOrder=ASC",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "26 - Read reward",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/rewards/{{rewardId}}",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "27 - Replace reward PUT",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/rewards/{{rewardId}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rewardName\": \"Voucher-{{runId}}\",\n  \"description\": \"Demo voucher\",\n  \"pointsRequired\": 100,\n  \"stockQuantity\": 2,\n  \"reorderLevel\": 1,\n  \"rewardStatus\": \"Available\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "28 - Update reward PATCH",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/rewards/{{rewardId}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": \"Updated demo voucher\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "29 - Staff cannot edit reward",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/rewards/{{rewardId}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{staffToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stockQuantity\": 100\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 403',()=>pm.response.to.have.status(403));",
+              "pm.test('Standard error format',()=>{const b=pm.response.json();pm.expect(b.success).to.eql(false);pm.expect(b.errors).to.be.an('array');pm.expect(b.timestamp).to.be.a('string');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "30 - Reserve redemption",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/redemptions",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{staffToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountId\": {{accountId}},\n  \"rewardId\": {{rewardId}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201',()=>pm.response.to.have.status(201));",
+              "if(pm.response.code===201)pm.collectionVariables.set('redemptionId',pm.response.json().redemptionId);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "31 - Read own redemption",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/redemptions/{{redemptionId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "32 - List own redemptions",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/redemptions",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "33 - Check balance after redemption",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/loyalty-accounts/{{accountId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "pm.test('50 points remain',()=>pm.expect(pm.response.json().pointsBalance).to.eql(50));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "34 - Cancel pending redemption",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/redemptions/{{redemptionId}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{staffToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"redemptionStatus\": \"Cancelled\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "35 - Repeat cancellation safely",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/redemptions/{{redemptionId}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{staffToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"redemptionStatus\": \"Cancelled\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "36 - Check refund",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/loyalty-accounts/{{accountId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "pm.test('Refund exactly once',()=>pm.expect(pm.response.json().pointsBalance).to.eql(150));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "37 - Read own email notifications",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/customers/{{customerId}}/email-notifications",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "38 - Manager email delivery logs",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/email-notifications?deliveryStatus=Pending",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "39 - History protects customer",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/customers/{{customerId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 409',()=>pm.response.to.have.status(409));",
+              "pm.test('Standard error format',()=>{const b=pm.response.json();pm.expect(b.success).to.eql(false);pm.expect(b.errors).to.be.an('array');pm.expect(b.timestamp).to.be.a('string');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "40 - History protects reward",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/rewards/{{rewardId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 409',()=>pm.response.to.have.status(409));",
+              "pm.test('Standard error format',()=>{const b=pm.response.json();pm.expect(b.success).to.eql(false);pm.expect(b.errors).to.be.an('array');pm.expect(b.timestamp).to.be.a('string');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "41 - Create temporary customer",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/customers",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Temporary\",\n  \"lastName\": \"Member\",\n  \"email\": \"temp-{{runId}}@example.test\",\n  \"password\": \"{{demoPassword}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201',()=>pm.response.to.have.status(201));",
+              "if(pm.response.code===201)pm.collectionVariables.set('tempCustomerId',pm.response.json().customerId);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "42 - Delete unused customer",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/customers/{{tempCustomerId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 204',()=>pm.response.to.have.status(204));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "43 - Deleted customer missing",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/customers/{{tempCustomerId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 404',()=>pm.response.to.have.status(404));",
+              "pm.test('Standard error format',()=>{const b=pm.response.json();pm.expect(b.success).to.eql(false);pm.expect(b.errors).to.be.an('array');pm.expect(b.timestamp).to.be.a('string');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "44 - Create temporary reward",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/rewards",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rewardName\": \"Temporary-{{runId}}\",\n  \"description\": \"Demo voucher\",\n  \"pointsRequired\": 100,\n  \"stockQuantity\": 2,\n  \"reorderLevel\": 1,\n  \"rewardStatus\": \"Available\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201',()=>pm.response.to.have.status(201));",
+              "if(pm.response.code===201)pm.collectionVariables.set('tempRewardId',pm.response.json().rewardId);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "45 - Delete unused reward",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/rewards/{{tempRewardId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 204',()=>pm.response.to.have.status(204));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "46 - Register other customer",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/customers",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Other\",\n  \"lastName\": \"Member\",\n  \"email\": \"other-{{runId}}@example.test\",\n  \"password\": \"{{demoPassword}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201',()=>pm.response.to.have.status(201));",
+              "if(pm.response.code===201)pm.collectionVariables.set('otherCustomerId',pm.response.json().customerId);",
+              "if(pm.response.code===201)pm.collectionVariables.set('otherAccountId',pm.response.json().accountId);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "47 - Reject other profile access",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/customers/{{otherCustomerId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 403',()=>pm.response.to.have.status(403));",
+              "pm.test('Standard error format',()=>{const b=pm.response.json();pm.expect(b.success).to.eql(false);pm.expect(b.errors).to.be.an('array');pm.expect(b.timestamp).to.be.a('string');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "48 - Reject other account access",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/loyalty-accounts/{{otherAccountId}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 403',()=>pm.response.to.have.status(403));",
+              "pm.test('Standard error format',()=>{const b=pm.response.json();pm.expect(b.success).to.eql(false);pm.expect(b.errors).to.be.an('array');pm.expect(b.timestamp).to.be.a('string');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "49 - Customer cannot award points",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/points-transactions",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{customerToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountId\": {{accountId}},\n  \"transactionType\": \"Adjust\",\n  \"points\": 999\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 403',()=>pm.response.to.have.status(403));",
+              "pm.test('Standard error format',()=>{const b=pm.response.json();pm.expect(b.success).to.eql(false);pm.expect(b.errors).to.be.an('array');pm.expect(b.timestamp).to.be.a('string');});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
