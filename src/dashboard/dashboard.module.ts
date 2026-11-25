@@ -43,7 +43,7 @@ class DashboardService {
  async redemptions(q:ListDto,actor:Actor){const {page:pg,limit}=page(q);const b=this.db.getRepository(Redemption).createQueryBuilder('r').innerJoin('r.transaction','t').innerJoin('t.account','a').innerJoin('a.customer','c').innerJoin('r.reward','w');
   if(actor.role==='customer')b.where('c.customerId=:owner',{owner:actor.id});
   if(q.redemptionStatus)b.andWhere('r.redemptionStatus=:status',{status:q.redemptionStatus});
-  if(q.search)b.andWhere('(c.firstName LIKE :term OR c.lastName LIKE :term OR w.rewardName LIKE :term)',{term:'%'+q.search+'%'});
+  if(q.search){const reference=/^(?:PW-)?([0-9]{1,10})$/i.exec(q.search.trim());b.andWhere('(c.firstName LIKE :term OR c.lastName LIKE :term OR w.rewardName LIKE :term OR r.redemptionId=:reference)',{term:'%'+q.search+'%',reference:reference?Number(reference[1]):0});}
   const totalItems=await b.getCount();const data=await b.select(['r.redemptionId AS redemptionId','r.transactionId AS transactionId','r.rewardId AS rewardId','r.dateRedeemed AS dateRedeemed','r.redemptionStatus AS redemptionStatus','w.rewardName AS rewardName','c.firstName AS firstName','c.lastName AS lastName','a.accountId AS accountId','t.points AS points']).orderBy('r.redemptionId','DESC').offset((pg-1)*limit).limit(limit).getRawMany();return {page:pg,limit,totalItems,data};
  }
 }
