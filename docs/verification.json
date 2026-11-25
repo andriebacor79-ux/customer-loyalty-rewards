@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-25T18:54:20.156Z",
+  "generatedAt": "2026-11-25T19:09:02.289Z",
   "database": "MySQL 8.4.13 / InnoDB",
-  "httpChecks": 97,
-  "scenarios": 99,
+  "httpChecks": 99,
+  "scenarios": 101,
   "distinctEndpoints": 27,
   "allPassed": true,
   "results": [
@@ -99,45 +99,59 @@
     },
     {
       "method": "GET",
-      "path": "/customers/8",
+      "path": "/customers/14",
       "status": 200,
       "passed": true,
-      "label": "/customers/8"
+      "label": "/customers/14"
+    },
+    {
+      "method": "PATCH",
+      "path": "/customers/14",
+      "status": 403,
+      "passed": true,
+      "label": "/customers/14"
+    },
+    {
+      "method": "PATCH",
+      "path": "/customers/14",
+      "status": 403,
+      "passed": true,
+      "label": "/customers/14"
     },
     {
       "method": "GET",
-      "path": "/customers/9",
+      "path": "/customers/15",
       "status": 403,
       "passed": true,
       "label": "Customer cannot read other profile"
     },
     {
       "method": "PATCH",
-      "path": "/customers/9",
+      "path": "/customers/15",
       "status": 403,
       "passed": true,
-      "label": "/customers/9"
+      "label": "/customers/15"
     },
     {
       "method": "PATCH",
-      "path": "/customers/8",
+      "path": "/customers/14",
       "status": 200,
       "passed": true,
-      "label": "/customers/8"
+      "label": "/customers/14"
     },
     {
       "method": "PATCH",
-      "path": "/customers/8",
+      "path": "/customers/14",
       "status": 400,
       "passed": true,
-      "label": "/customers/8"
+      "label": "/customers/14"
     },
     {
       "method": "PATCH",
-      "path": "/customers/8",
+      "path": "/customers/14",
       "status": 400,
       "passed": true,
-      "label": "/customers/8"
+      "label": "/customers/14"
     },
     {
       "method": "POST",
@@ -169,31 +183,31 @@
     },
     {
       "method": "GET",
-      "path": "/loyalty-accounts/7",
+      "path": "/loyalty-accounts/12",
       "status": 200,
       "passed": true,
-      "label": "/loyalty-accounts/7"
+      "label": "/loyalty-accounts/12"
     },
     {
       "method": "GET",
-      "path": "/loyalty-accounts/8",
+      "path": "/loyalty-accounts/13",
       "status": 403,
       "passed": true,
-      "label": "/loyalty-accounts/8"
+      "label": "/loyalty-accounts/13"
     },
     {
       "method": "PATCH",
-      "path": "/loyalty-accounts/7",
+      "path": "/loyalty-accounts/12",
       "status": 403,
       "passed": true,
-      "label": "/loyalty-accounts/7"
+      "label": "/loyalty-accounts/12"
     },
     {
       "method": "PATCH",
-      "path": "/loyalty-accounts/7",
+      "path": "/loyalty-accounts/12",
       "status": 200,
       "passed": true,
-      "label": "/loyalty-accounts/7"
+      "label": "/loyalty-accounts/12"
     },
     {
       "method": "POST",
@@ -204,10 +218,10 @@
     },
     {
       "method": "PATCH",
-      "path": "/loyalty-accounts/7",
+      "path": "/loyalty-accounts/12",
       "status": 200,
       "passed": true,
-      "label": "/loyalty-accounts/7"
+      "label": "/loyalty-accounts/12"
     },
     {
       "method": "POST",
@@ -218,31 +232,31 @@
     },
     {
       "method": "GET",
-      "path": "/points-transactions/10",
+      "path": "/points-transactions/19",
       "status": 200,
       "passed": true,
-      "label": "/points-transactions/10"
+      "label": "/points-transactions/19"
     },
     {
       "method": "GET",
-      "path": "/points-transactions/10",
+      "path": "/points-transactions/19",
       "status": 403,
       "passed": true,
-      "label": "/points-transactions/10"
+      "label": "/points-transactions/19"
     },
     {
       "method": "GET",
-      "path": "/loyalty-accounts/7/points-transactions?transactionType=Earn",
+      "path": "/loyalty-accounts/12/points-transactions?transactionType=Earn",
       "status": 200,
       "passed": true,
-      "label": "/loyalty-accounts/7/points-transactions?transactionType=Earn"
+      "label": "/loyalty-accounts/12/points-transactions?transactionType=Earn"
     },
     {
       "method": "GET",
-      "path": "/loyalty-accounts/7/points-transactions",
+      "path": "/loyalty-accounts/12/points-transactions",
       "status": 403,
       "passed": true,
-      "label": "/loyalty-accounts/7/points-transactions"
+      "label": "/loyalty-accounts/12/points-transactions"
     },
     {
       "method": "POST",
@@ -302,31 +316,31 @@
     },
     {
       "method": "GET",
-      "path": "/rewards/4",
+      "path": "/rewards/7",
       "status": 200,
       "passed": true,
-      "label": "/rewards/4"
+      "label": "/rewards/7"
     },
     {
       "method": "PUT",
-      "path": "/rewards/4",
+      "path": "/rewards/7",
       "status": 200,
       "passed": true,
-      "label": "/rewards/4"
+      "label": "/rewards/7"
     },
     {
       "method": "PUT",
-      "path": "/rewards/4",
+      "path": "/rewards/7",
       "status": 400,
       "passed": true,
-      "label": "/rewards/4"
+      "label": "/rewards/7"
     },
     {
       "method": "PATCH",
-      "path": "/rewards/4",
+      "path": "/rewards/7",
       "status": 200,
       "passed": true,
-      "label": "/rewards/4"
+      "label": "/rewards/7"
     },
     {
       "method": "POST",
@@ -351,45 +365,45 @@
     },
     {
       "method": "PATCH",
-      "path": "/redemptions/5",
+      "path": "/redemptions/9",
       "status": 403,
       "passed": true,
-      "label": "/redemptions/5"
+      "label": "/redemptions/9"
     },
     {
       "method": "PATCH",
-      "path": "/redemptions/5",
+      "path": "/redemptions/9",
       "status": 403,
       "passed": true,
-      "label": "/redemptions/5"
+      "label": "/redemptions/9"
     },
     {
       "method": "GET",
-      "path": "/loyalty-accounts/7",
+      "path": "/loyalty-accounts/12",
       "status": 200,
       "passed": true,
-      "label": "/loyalty-accounts/7"
+      "label": "/loyalty-accounts/12"
     },
     {
       "method": "GET",
-      "path": "/points-transactions/11",
+      "path": "/points-transactions/20",
       "status": 200,
       "passed": true,
-      "label": "/points-transactions/11"
+      "label": "/points-transactions/20"
     },
     {
       "method": "GET",
-      "path": "/redemptions/5",
+      "path": "/redemptions/9",
       "status": 200,
       "passed": true,
-      "label": "/redemptions/5"
+      "label": "/redemptions/9"
     },
     {
       "method": "GET",
-      "path": "/redemptions/5",
+      "path": "/redemptions/9",
       "status": 403,
       "passed": true,
-      "label": "/redemptions/5"
+      "label": "/redemptions/9"
     },
     {
       "method": "GET",
@@ -407,17 +421,17 @@
     },
     {
       "method": "GET",
-      "path": "/customers/8/email-notifications?notificationType=PointsUpdate",
+      "path": "/customers/14/email-notifications?notificationType=PointsUpdate",
       "status": 200,
       "passed": true,
-      "label": "/customers/8/email-notifications?notificationType=PointsUpdate"
+      "label": "/customers/14/email-notifications?notificationType=PointsUpdate"
     },
     {
       "method": "GET",
-      "path": "/customers/8/email-notifications",
+      "path": "/customers/14/email-notifications",
       "status": 403,
       "passed": true,
-      "label": "/customers/8/email-notifications"
+      "label": "/customers/14/email-notifications"
     },
     {
       "method": "GET",
@@ -435,38 +449,38 @@
     },
     {
       "method": "PATCH",
-      "path": "/rewards/4",
+      "path": "/rewards/7",
       "status": 200,
       "passed": true,
-      "label": "/rewards/4"
+      "label": "/rewards/7"
     },
     {
       "method": "PATCH",
-      "path": "/redemptions/5",
+      "path": "/redemptions/9",
       "status": 200,
       "passed": true,
-      "label": "/redemptions/5"
+      "label": "/redemptions/9"
     },
     {
       "method": "PATCH",
-      "path": "/redemptions/5",
+      "path": "/redemptions/9",
       "status": 200,
       "passed": true,
-      "label": "/redemptions/5"
+      "label": "/redemptions/9"
     },
     {
       "method": "GET",
-      "path": "/loyalty-accounts/7",
+      "path": "/loyalty-accounts/12",
       "status": 200,
       "passed": true,
-      "label": "/loyalty-accounts/7"
+      "label": "/loyalty-accounts/12"
     },
     {
       "method": "GET",
-      "path": "/rewards/4",
+      "path": "/rewards/7",
       "status": 200,
       "passed": true,
-      "label": "/rewards/4"
+      "label": "/rewards/7"
     },
     {
       "method": "POST",
@@ -484,38 +498,38 @@
     },
     {
       "method": "PATCH",
-      "path": "/redemptions/6",
+      "path": "/redemptions/10",
       "status": 200,
       "passed": true,
-      "label": "/redemptions/6"
+      "label": "/redemptions/10"
     },
     {
       "method": "GET",
-      "path": "/points-transactions/14",
+      "path": "/points-transactions/23",
       "status": 200,
       "passed": true,
-      "label": "/points-transactions/14"
+      "label": "/points-transactions/23"
     },
     {
       "method": "PATCH",
-      "path": "/redemptions/6",
+      "path": "/redemptions/10",
       "status": 409,
       "passed": true,
-      "label": "/redemptions/6"
+      "label": "/redemptions/10"
     },
     {
       "method": "DELETE",
-      "path": "/customers/8",
+      "path": "/customers/14",
       "status": 409,
       "passed": true,
-      "label": "/customers/8"
+      "label": "/customers/14"
     },
     {
       "method": "DELETE",
-      "path": "/rewards/4",
+      "path": "/rewards/7",
       "status": 409,
       "passed": true,
-      "label": "/rewards/4"
+      "label": "/rewards/7"
     },
     {
       "method": "POST",
@@ -526,24 +540,24 @@
     },
     {
       "method": "DELETE",
-      "path": "/customers/11",
+      "path": "/customers/17",
       "status": 403,
       "passed": true,
-      "label": "/customers/11"
+      "label": "/customers/17"
     },
     {
       "method": "DELETE",
-      "path": "/customers/11",
+      "path": "/customers/17",
       "status": 204,
       "passed": true,
-      "label": "/customers/11"
+      "label": "/customers/17"
     },
     {
       "method": "GET",
-      "path": "/customers/11",
+      "path": "/customers/17",
       "status": 404,
       "passed": true,
-      "label": "/customers/11"
+      "label": "/customers/17"
     },
     {
       "method": "POST",
@@ -554,10 +568,10 @@
     },
     {
       "method": "DELETE",
-      "path": "/rewards/5",
+      "path": "/rewards/8",
       "status": 204,
       "passed": true,
-      "label": "/rewards/5"
+      "label": "/rewards/8"
     },
     {
       "method": "GET",
@@ -617,24 +631,24 @@
     },
     {
       "method": "GET",
-      "path": "/rewards/6",
+      "path": "/rewards/9",
       "status": 200,
       "passed": true,
-      "label": "/rewards/6"
+      "label": "/rewards/9"
     },
     {
       "method": "GET",
-      "path": "/loyalty-accounts/10",
+      "path": "/loyalty-accounts/15",
       "status": 200,
       "passed": true,
-      "label": "/loyalty-accounts/10"
+      "label": "/loyalty-accounts/15"
     },
     {
       "method": "GET",
-      "path": "/loyalty-accounts/11",
+      "path": "/loyalty-accounts/16",
       "status": 200,
       "passed": true,
-      "label": "/loyalty-accounts/11"
+      "label": "/loyalty-accounts/16"
     },
     {
       "label": "Concurrent last-stock redemption conserves points and stock",
@@ -642,10 +656,10 @@
     },
     {
       "method": "PATCH",
-      "path": "/rewards/6",
+      "path": "/rewards/9",
       "status": 200,
       "passed": true,
-      "label": "/rewards/6"
+      "label": "/rewards/9"
     },
     {
       "label": "Same customer cannot spend one point twice concurrently",

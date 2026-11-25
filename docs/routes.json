@@ -37,7 +37,7 @@
   [
     "PATCH",
     "/customers/:id",
-    "Owner/Staff/Manager",
+    "Owner only",
     200,
     "Update profile"
   ],

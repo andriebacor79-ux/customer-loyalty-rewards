@@ -9,7 +9,7 @@ Base URL: `http://localhost:3000/api/v1` (or HTTPS after configuring TLS).
 |GET|/customers|Staff/Manager|200|
 |POST|/customers|Public|201|
 |GET|/customers/:id|Owner/Staff/Manager|200|
-|PATCH|/customers/:id|Owner/Staff/Manager|200|
+|PATCH|/customers/:id|Owner only|200|
 |DELETE|/customers/:id|Manager|204|
 |GET|/customers/:id/email-notifications|Owner/Staff/Manager|200|
 |GET|/employees|Manager|200|
@@ -94,3 +94,7 @@ EmailNotification fields: `{notificationId,customerId,employeeId,notificationTyp
 Customers can reserve their own rewards using POST /redemptions `{accountId,rewardId}`. Ownership is enforced inside the locked transaction. PATCH /redemptions/:id `{redemptionStatus:"Cancelled"}` is allowed for the owning customer; Completed remains employee-only. Other members' reservations are forbidden. Pending reservations debit the account and stock; cancellation credits the original debit exactly once. Display reference is PW- followed by redemptionId padded to six digits, and staff must verify the member identity when collecting. GET /dashboard/redemptions?search=PW-000001 lets staff find a reference.
 
 PointsTransaction.EmployeeID is nullable for customer-initiated reservations/refunds. Staff collection attributes an unassigned Redeem transaction to the staff member. Existing staff-created records are preserved.
+
+## Customer profile permissions update
+
+Customer details can be edited only by the owning customer. Manager and Staff PATCH /customers/:id requests return HTTP 403. Their customer list has no Edit or Add customer action. Manager retains account Status and Delete account; deletion remains blocked for memberships with transaction history. Public self-registration through the login screen is retained. This restricts profile editing without changing role permissions for points, rewards or redemptions.
