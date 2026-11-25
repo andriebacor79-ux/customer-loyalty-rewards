@@ -278,7 +278,7 @@ async function login(email, secret = password, type = "customer") {
   await call(
     "POST",
     "/redemptions",
-    { accountId: c.accountId, rewardId: reward.rewardId },
+    { accountId: b.accountId, rewardId: reward.rewardId },
     403,
     cToken,
   );
@@ -294,9 +294,11 @@ async function login(email, secret = password, type = "customer") {
     "/redemptions",
     { accountId: c.accountId, rewardId: reward.rewardId },
     201,
-    staff,
+    cToken,
   );
   assert.equal(redemption.redemptionStatus, "Pending");
+  await call("PATCH", `/redemptions/${redemption.redemptionId}`, {redemptionStatus:"Completed"}, 403, cToken);
+  await call("PATCH", `/redemptions/${redemption.redemptionId}`, {redemptionStatus:"Cancelled"}, 403, bToken);
   let balance = await call("GET", `/loyalty-accounts/${c.accountId}`);
   assert.equal(balance.pointsBalance, 50);
   const snapshot = await call(
@@ -304,6 +306,7 @@ async function login(email, secret = password, type = "customer") {
     `/points-transactions/${redemption.transactionId}`,
   );
   assert.equal(snapshot.points, -100);
+  assert.equal(snapshot.employeeId, null);
   await call(
     "GET",
     `/redemptions/${redemption.redemptionId}`,
@@ -348,14 +351,14 @@ async function login(email, secret = password, type = "customer") {
     `/redemptions/${redemption.redemptionId}`,
     { redemptionStatus: "Cancelled" },
     200,
-    staff,
+    cToken,
   );
   await call(
     "PATCH",
     `/redemptions/${redemption.redemptionId}`,
     { redemptionStatus: "Cancelled" },
     200,
-    staff,
+    cToken,
   );
   balance = await call("GET", `/loyalty-accounts/${c.accountId}`);
   assert.equal(balance.pointsBalance, 150);
@@ -373,7 +376,7 @@ async function login(email, secret = password, type = "customer") {
     "/redemptions",
     { accountId: c.accountId, rewardId: reward.rewardId },
     201,
-    staff,
+    cToken,
   );
   await call(
     "PATCH",
@@ -382,6 +385,8 @@ async function login(email, secret = password, type = "customer") {
     200,
     staff,
   );
+  const processed = await call("GET", `/points-transactions/${completed.transactionId}`);
+  assert.ok(Number.isInteger(processed.employeeId));
   await call(
     "PATCH",
     `/redemptions/${completed.redemptionId}`,
@@ -482,7 +487,7 @@ async function login(email, secret = password, type = "customer") {
   );
   const summary = {
     generatedAt: new Date().toISOString(),
-    database: "MySQL 8.4.9 / InnoDB",
+    database: "MySQL 8.4.13 / InnoDB",
     httpChecks: results.filter((x) => x.method).length,
     scenarios: results.length,
     distinctEndpoints: covered.size,
