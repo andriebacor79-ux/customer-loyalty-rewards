@@ -100,6 +100,8 @@ async function login(email, secret = password, type = "customer") {
   bToken = await login(b.email);
   await call("GET", "/customers?search=Member&limit=5");
   await call("GET", `/customers/${c.customerId}`, null, 200, cToken);
+  await call("PATCH", `/customers/${c.customerId}`, {firstName:"ForbiddenManagerEdit"}, 403, manager);
+  await call("PATCH", `/customers/${c.customerId}`, {firstName:"ForbiddenStaffEdit"}, 403, staff);
   await call(
     "GET",
     `/customers/${b.customerId}`,
