@@ -3,6 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
   ConflictException,
+  ForbiddenException,
 } from "@nestjs/common";
 import { DataSource, EntityManager } from "typeorm";
 import {
@@ -111,9 +112,11 @@ export class TransactionsService {
     ownCustomer(actor, a.customerId);
     return t;
   }
-  async redeem(d: CreateRedemptionDto, employeeId: number) {
+  async redeem(d: CreateRedemptionDto, actor: Actor) {
+    const employeeId = actor.type === "employee" ? actor.id : null;
     return this.db.transaction(async (m) => {
       const a = await this.lockAccount(m, d.accountId);
+      ownCustomer(actor, a.customerId);
       this.checkActive(a);
       const r = await m.findOne(Reward, {
         where: { rewardId: d.rewardId },
@@ -185,8 +188,11 @@ export class TransactionsService {
   async updateRedemption(
     id: number,
     d: RedemptionStatusDto,
-    employeeId: number,
+    actor: Actor,
   ) {
+    if(actor.role === "customer" && d.redemptionStatus !== "Cancelled")
+      throw new ForbiddenException("Only staff or managers can confirm reward collection");
+    const employeeId = actor.type === "employee" ? actor.id : null;
     const initial = await this.db
       .getRepository(Redemption)
       .findOneBy({ redemptionId: id });
@@ -197,6 +203,7 @@ export class TransactionsService {
     return this.db.transaction(async (m) => {
       // Consistent order prevents double refunds and stock races: account -> reward -> redemption.
       const a = await this.lockAccount(m, t.accountId);
+      ownCustomer(actor, a.customerId);
       const reward = await m.findOne(Reward, {
         where: { rewardId: initial.rewardId },
         lock: { mode: "pessimistic_write" },
@@ -238,7 +245,9 @@ export class TransactionsService {
           "Redemption cancelled",
           `${refund} points refunded for redemption ${id}. Balance: ${a.pointsBalance}.`,
         );
-      } else
+      } else {
+        // Record the employee who actually hands over a customer-requested reward.
+        if(t.employeeId === null){t.employeeId = employeeId;await m.save(t);}
         await queueCustomer(
           m,
           a.customerId,
@@ -246,6 +255,7 @@ export class TransactionsService {
           "Redemption completed",
           `Redemption ${id} was completed.`,
         );
+      }
       r.redemptionStatus = d.redemptionStatus;
       return m.save(r);
     });

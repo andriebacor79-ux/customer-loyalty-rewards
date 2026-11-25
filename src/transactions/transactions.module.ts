@@ -37,21 +37,21 @@ class RedemptionsController {
   @Get() list(@Query() q: ListDto, @Req() r: any) {
     return this.service.list(q, r.user);
   }
-  @Roles("staff", "manager") @Post() create(
+  @Roles("customer", "staff", "manager") @Post() create(
     @Body() d: CreateRedemptionDto,
     @Req() r: any,
   ) {
-    return this.service.redeem(d, r.user.id);
+    return this.service.redeem(d, r.user);
   }
   @Get(":id") one(@Param("id", ParseIntPipe) id: number, @Req() r: any) {
     return this.service.redemption(id, r.user);
   }
-  @Roles("staff", "manager") @Patch(":id") update(
+  @Roles("customer", "staff", "manager") @Patch(":id") update(
     @Param("id", ParseIntPipe) id: number,
     @Body() d: RedemptionStatusDto,
     @Req() r: any,
   ) {
-    return this.service.updateRedemption(id, d, r.user.id);
+    return this.service.updateRedemption(id, d, r.user);
   }
 }
 @Module({
