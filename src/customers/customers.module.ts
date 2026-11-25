@@ -15,6 +15,7 @@ import {
   NotFoundException,
   BadRequestException,
   ConflictException,
+  ForbiddenException,
 } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { hash } from "bcryptjs";
@@ -91,6 +92,8 @@ export class CustomersService {
     });
   }
   async update(id: number, d: UpdateCustomerDto, actor: Actor) {
+    if(actor.role !== "customer" || actor.type !== "customer")
+      throw new ForbiddenException("Only customers may update their own profile details");
     rejectNulls(d);
     await this.one(id, actor);
     if (d.birthDate && d.birthDate > new Date().toISOString().slice(0, 10))
@@ -164,7 +167,7 @@ export class CustomersController {
   @Get(":id") one(@Param("id", ParseIntPipe) id: number, @Req() r: any) {
     return this.service.one(id, r.user);
   }
-  @Patch(":id") update(
+  @Roles("customer") @Patch(":id") update(
     @Param("id", ParseIntPipe) id: number,
     @Body() d: UpdateCustomerDto,
     @Req() r: any,
