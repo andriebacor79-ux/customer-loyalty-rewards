@@ -12,6 +12,7 @@ export function databaseOptions(): DataSourceOptions {
     password: process.env.DB_PASSWORD,
     database,
     entities,
+    ...(process.env.DB_SSL === "true" ? {ssl: {rejectUnauthorized: true, ...(process.env.DB_CA_CERT ? {ca: process.env.DB_CA_CERT.replace(/\\n/g,"\n")} : {})}} : {}),
     synchronize: false,
     charset: "utf8mb4",
     timezone: "Z",

@@ -1,3 +1,4 @@
+import { DashboardModule } from "./dashboard/dashboard.module";
 import { Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
 import { ConfigModule } from "@nestjs/config";
@@ -27,6 +28,7 @@ import { NotificationsModule } from "./notifications/notifications.module";
       },
     }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 120 }]),
+    DashboardModule,
     AuthModule,
     CustomersModule,
     EmployeesModule,
