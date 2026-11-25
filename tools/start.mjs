@@ -8,4 +8,5 @@ if(process.env.INIT_DATABASE==='true'){
  if(rows.length===0)await run('dist/setup.js');else if(rows.length!==7)throw new Error('Partial schema detected; initialize the database manually before deploying.');
  if(process.env.STAFF_PASSWORD&&process.env.CUSTOMER_PASSWORD)await run('dist/seed-accounts.js');
 }
+await run('dist/migrations/customer-redemptions.js');
 await run('dist/main.js');
