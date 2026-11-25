@@ -3,7 +3,7 @@ services:
     name: perkwise-loyalty
     runtime: node
     plan: free
-    buildCommand: npm ci && npm --prefix web ci && npm run build
+    buildCommand: npm ci --include=dev && npm --prefix web ci --include=dev && npm run build
     startCommand: node tools/start.mjs
     healthCheckPath: /api/v1/health
     envVars:
