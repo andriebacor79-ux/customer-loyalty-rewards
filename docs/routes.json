@@ -1,0 +1,191 @@
+[
+  [
+    "POST",
+    "/auth/login",
+    "Public",
+    200,
+    "Login for customer or employee"
+  ],
+  [
+    "GET",
+    "/auth/me",
+    "Authenticated",
+    200,
+    "Current token identity"
+  ],
+  [
+    "GET",
+    "/customers",
+    "Staff/Manager",
+    200,
+    "Search customer profiles"
+  ],
+  [
+    "POST",
+    "/customers",
+    "Public",
+    201,
+    "Register customer and loyalty account"
+  ],
+  [
+    "GET",
+    "/customers/:id",
+    "Owner/Staff/Manager",
+    200,
+    "Read profile"
+  ],
+  [
+    "PATCH",
+    "/customers/:id",
+    "Owner/Staff/Manager",
+    200,
+    "Update profile"
+  ],
+  [
+    "DELETE",
+    "/customers/:id",
+    "Manager",
+    204,
+    "Delete unused membership"
+  ],
+  [
+    "GET",
+    "/customers/:id/email-notifications",
+    "Owner/Staff/Manager",
+    200,
+    "Customer email history"
+  ],
+  [
+    "GET",
+    "/employees",
+    "Manager",
+    200,
+    "List employees"
+  ],
+  [
+    "POST",
+    "/employees",
+    "Manager",
+    201,
+    "Create Staff/Manager"
+  ],
+  [
+    "GET",
+    "/loyalty-accounts",
+    "Staff/Manager",
+    200,
+    "Filter accounts by status"
+  ],
+  [
+    "GET",
+    "/loyalty-accounts/:id",
+    "Owner/Staff/Manager",
+    200,
+    "Balance and account status"
+  ],
+  [
+    "PATCH",
+    "/loyalty-accounts/:id",
+    "Manager",
+    200,
+    "Suspend/reactivate account"
+  ],
+  [
+    "GET",
+    "/loyalty-accounts/:id/points-transactions",
+    "Owner/Staff/Manager",
+    200,
+    "Account ledger history"
+  ],
+  [
+    "POST",
+    "/points-transactions",
+    "Staff/Manager",
+    201,
+    "Earn or manually adjust points"
+  ],
+  [
+    "GET",
+    "/points-transactions/:id",
+    "Owner/Staff/Manager",
+    200,
+    "Read ledger entry"
+  ],
+  [
+    "GET",
+    "/rewards",
+    "Public",
+    200,
+    "Browse/search/filter/sort catalog"
+  ],
+  [
+    "GET",
+    "/rewards/:id",
+    "Public",
+    200,
+    "Read reward"
+  ],
+  [
+    "POST",
+    "/rewards",
+    "Manager",
+    201,
+    "Create reward"
+  ],
+  [
+    "PUT",
+    "/rewards/:id",
+    "Manager",
+    200,
+    "Replace editable reward fields"
+  ],
+  [
+    "PATCH",
+    "/rewards/:id",
+    "Manager",
+    200,
+    "Partial reward update"
+  ],
+  [
+    "DELETE",
+    "/rewards/:id",
+    "Manager",
+    204,
+    "Delete unreferenced reward"
+  ],
+  [
+    "GET",
+    "/redemptions",
+    "Owner-scoped/Staff/Manager",
+    200,
+    "List redemptions"
+  ],
+  [
+    "POST",
+    "/redemptions",
+    "Staff/Manager",
+    201,
+    "Reserve reward and points"
+  ],
+  [
+    "GET",
+    "/redemptions/:id",
+    "Owner/Staff/Manager",
+    200,
+    "Read redemption"
+  ],
+  [
+    "PATCH",
+    "/redemptions/:id",
+    "Staff/Manager",
+    200,
+    "Complete/cancel pending redemption"
+  ],
+  [
+    "GET",
+    "/email-notifications",
+    "Manager",
+    200,
+    "Customer and manager delivery logs"
+  ]
+]

@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-11-24T08:36:12.192Z",
+  "ledgerReconciles": true,
+  "databaseRejectsNegativeStock": true,
+  "previewDoesNotSend": true,
+  "smtpAcceptedByLocalCapture": 70,
+  "smtpFailureRecorded": true,
+  "httpsServed": true,
+  "externalEmailSent": false
+}

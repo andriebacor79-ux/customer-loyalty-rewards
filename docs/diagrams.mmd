@@ -1,0 +1,19 @@
+flowchart TD
+  P[Postman] --> G[JWT and role guards]
+  G --> V[DTO validation]
+  V --> C[Controllers]
+  C --> S[Services]
+  S --> T[TypeORM EntityManager]
+  T --> D[(MySQL)]
+  D --> Q[Pending email rows]
+  Q --> W[SMTP dispatcher]
+  W --> M[SMTP capture or provider]
+
+erDiagram
+ CUSTOMER ||--|| LOYALTY_ACCOUNT : owns
+ LOYALTY_ACCOUNT ||--o{ POINTS_TRANSACTION : records
+ EMPLOYEE ||--o{ POINTS_TRANSACTION : processes
+ POINTS_TRANSACTION ||--o| REDEMPTION : generates
+ REWARD ||--o{ REDEMPTION : appears_in
+ CUSTOMER o|--o{ EMAIL_NOTIFICATION : receives
+ EMPLOYEE o|--o{ EMAIL_NOTIFICATION : receives
