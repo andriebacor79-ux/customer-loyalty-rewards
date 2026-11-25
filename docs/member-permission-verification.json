@@ -1,0 +1,68 @@
+{
+  "checkedAt": "2026-11-25T19:12:06.987Z",
+  "passed": true,
+  "checks": 12,
+  "scope": "Public signup retained; owner profile updates allowed; staff and manager personal-data edits denied; manager status control retained.",
+  "results": [
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/customers",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/customers/4",
+      "status": 403
+    },
+    {
+      "method": "PATCH",
+      "path": "/customers/4",
+      "status": 403
+    },
+    {
+      "method": "GET",
+      "path": "/customers/4",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/customers/4",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/customers/4",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/loyalty-accounts/4",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/loyalty-accounts/4",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/loyalty-accounts/4",
+      "status": 403
+    }
+  ]
+}
