@@ -1,0 +1,146 @@
+{
+  "checkedAt": "2026-11-25T18:36:01.254Z",
+  "website": "https://perkwise-loyalty.onrender.com/",
+  "checks": 25,
+  "passed": true,
+  "scenarios": [
+    "Three role logins",
+    "Role restrictions",
+    "Seven day overview",
+    "Customer isolation",
+    "PHP1500 earns150",
+    "Reserve100 leaves50",
+    "Cancelrefund150",
+    "Repeatedcancellationdoesnotdoublerefund",
+    "Publichealth",
+    "Livecatalog"
+  ],
+  "sampleData": "Three sample rewards and one clearly named synthetic presentation customer; original personal account balances were not changed.",
+  "results": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/overview",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/overview",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/overview",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/customers",
+      "status": 403
+    },
+    {
+      "method": "GET",
+      "path": "/employees",
+      "status": 403
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/profile",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/rewards?limit=100",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/customers",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/customers?search=presentation-1795631736083",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/points-transactions",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/rewards?limit=100",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/redemptions",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/loyalty-accounts/2",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/redemptions/1",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/redemptions/1",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/loyalty-accounts/2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/loyalty-accounts/2",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/points-transactions",
+      "status": 403
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/transactions",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/redemptions",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/email-notifications?deliveryStatus=Pending",
+      "status": 200
+    }
+  ]
+}

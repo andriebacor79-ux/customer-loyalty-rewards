@@ -14,3 +14,15 @@ The same Node service hosts the React frontend and NestJS API. MySQL 8.4 is requ
 8. Verify health, sign in as all three roles, record a purchase, reserve/cancel a reward, and check customer isolation.
 
 Free service limits can cause cold starts or downtime. No paid plan, card entry or paid database is authorized by this repository. Verify provider pricing before provisioning. The frontend does not include Google OAuth or password reset.
+
+## Verified deployment — 26 November 2026 (Philippines)
+
+Website: https://perkwise-loyalty.onrender.com/
+Health endpoint: https://perkwise-loyalty.onrender.com/api/v1/health
+Repository: https://github.com/andriebacor79-ux/customer-loyalty-rewards
+
+Render Free hosts the full React/NestJS app in Singapore. Railway hosts MySQL 8.4.13 with persistent storage, verified certificate trust, required encrypted transport, and a separate app user scoped to loyalty_v2. INIT_DATABASE was disabled after successful initialization. No paid subscription or payment method was added. Railway initially places new accounts in its 30-day/$5 free trial; the owner must review the Free plan at the end of the trial. Free credits and inactivity sleeping can interrupt availability, so open the website and check the Railway plan before a presentation.
+
+`cloud-verification.json` records 25 successful live checks including all three role logins, permissions, customer isolation, earning, redemption debit, cancellation and exactly-once refund on repeated cancellation. Three sample rewards and a synthetic Demo Presentation customer were created for the demonstration; no personal customer account was credited with fabricated purchase history. The frontend login page was inspected in the browser. SMTP remains unconfigured remotely and queued notifications remain Pending; no external email was sent.
+
+Application login passwords are delivered privately to the owner and are not stored in this repository. Existing Windows MySQL data was not automatically migrated to Railway.
