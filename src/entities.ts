@@ -79,10 +79,10 @@ export class PointsTransaction {
   })
   @JoinColumn({ name: "AccountID" })
   account!: Relation<LoyaltyAccount>;
-  @Column({ name: "EmployeeID" }) employeeId!: number;
-  @ManyToOne(() => Employee, (e) => e.transactions, { onDelete: "RESTRICT" })
+  @Column({ name: "EmployeeID", type: "int", nullable: true }) employeeId!: number | null;
+  @ManyToOne(() => Employee, (e) => e.transactions, { onDelete: "RESTRICT", nullable: true })
   @JoinColumn({ name: "EmployeeID" })
-  employee!: Employee;
+  employee!: Employee | null;
   @Column({ name: "TransactionType", type: "varchar", length: 10 })
   transactionType!: "Earn" | "Redeem" | "Adjust";
   @Column({ name: "Points", type: "int" }) points!: number;
