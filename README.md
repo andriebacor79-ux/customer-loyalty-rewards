@@ -140,7 +140,7 @@ Do not publish real customer data, real password hashes or credentials. The supp
 
 Documentation.pdf is an updated technical draft. Documentation.md is editable; regenerate using `python tools/render_docs.py` after `pip install reportlab`. Bundled DejaVu fonts include their license.
 
-Your personal GitHub repository, at least five genuine meaningful development commits, narrated 5-10 minute video, actual Postman/database screenshots and live presentation remain student deliverables. No artificial commit history, GitHub URL, screenshots or video link is supplied. Read docs/SUBMISSION.md and docs/DEMO_SCRIPT.md. Add your actual links on the report cover before submission.
+Your personal GitHub repository, at least five genuine meaningful development commits, narrated 5-10 minute video, actual Postman/database screenshots and live presentation remain student deliverables. The repository contains clearly labelled source-import and frontend-development commits, not backdated student history. Actual presentation screenshots and video remain student deliverables. Read docs/SUBMISSION.md and docs/DEMO_SCRIPT.md. Add your actual links on the report cover before submission.
 
 ## Production limits
 
@@ -153,3 +153,9 @@ After setting up your database, `npm run accounts:seed` creates the three config
 `npm run build` builds both API and React. `npm start` serves the website at http://localhost:3000 and the API at /api/v1. For frontend development, keep the API on port 3000 and run `npm run web:dev` in a second terminal. `npm --prefix web test` checks the API client's authentication and outage handling.
 
 See docs/DEPLOYMENT.md and render.yaml for Render. Never commit .env or account passwords. The bundled SQL snapshot has no usable passwords; use a fresh dedicated cloud database for a new deployment.
+
+## Live demonstration
+
+Perkwise: https://perkwise-loyalty.onrender.com/
+
+The deployed app uses a fresh MySQL database. The Windows database was not migrated automatically. Manager, Staff and Customer sign in with their assigned app credentials; the three Gmail addresses are application identifiers, not Google OAuth logins. Passwords were delivered privately. See docs/DEPLOYMENT.md for verified hosting details and free-plan limits.
