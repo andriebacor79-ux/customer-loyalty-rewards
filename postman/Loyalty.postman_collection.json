@@ -1089,7 +1089,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{staffToken}}",
+              "value": "{{customerToken}}",
               "type": "string"
             }
           ]
@@ -1221,7 +1221,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{staffToken}}",
+              "value": "{{customerToken}}",
               "type": "string"
             }
           ]
@@ -1264,7 +1264,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{staffToken}}",
+              "value": "{{customerToken}}",
               "type": "string"
             }
           ]
