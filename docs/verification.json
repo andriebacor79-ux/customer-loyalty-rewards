@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-11-25T18:54:20.156Z",
-  "database": "MySQL 8.4.9 / InnoDB",
+  "database": "MySQL 8.4.13 / InnoDB",
   "httpChecks": 97,
   "scenarios": 99,
   "distinctEndpoints": 27,

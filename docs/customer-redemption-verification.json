@@ -1,0 +1,144 @@
+{
+  "checkedAt": "2026-11-25T19:00:14.864Z",
+  "passed": true,
+  "checks": 27,
+  "scenario": "Customer reserves own reward, staff verifies collection, owner cancels pending only; original debit and stock refunded once.",
+  "syntheticData": "Created one clearly named test member and reward; disabled the test reward after verification. Personal user balances were not altered.",
+  "results": [
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/customers",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/profile",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/rewards",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/points-transactions",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/redemptions",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/points-transactions/5",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/loyalty-accounts/3",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/redemptions",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "path": "/redemptions",
+      "status": 403
+    },
+    {
+      "method": "PATCH",
+      "path": "/redemptions/2",
+      "status": 403
+    },
+    {
+      "method": "PATCH",
+      "path": "/redemptions/2",
+      "status": 403
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/redemptions?search=PW-000002",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/redemptions/2",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/redemptions/2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/loyalty-accounts/3",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/rewards/4",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/redemptions",
+      "status": 201
+    },
+    {
+      "method": "PATCH",
+      "path": "/redemptions/3",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/points-transactions/7",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/redemptions/3",
+      "status": 409
+    },
+    {
+      "method": "GET",
+      "path": "/loyalty-accounts/3",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/points-transactions",
+      "status": 403
+    },
+    {
+      "method": "PATCH",
+      "path": "/rewards/4",
+      "status": 200
+    }
+  ]
+}
