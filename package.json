@@ -1,16 +1,21 @@
 {
   "name": "customer-loyalty-rewards",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "npm run build:api && npm --prefix web run build",
     "start": "node dist/main.js",
     "start:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
     "db:setup": "ts-node src/setup.ts",
     "test:e2e": "node test/e2e.cjs",
     "mail:dispatch": "ts-node src/notifications/dispatch.ts",
     "mail:preview": "ts-node src/notifications/preview.ts",
-    "test:integration": "node test/integration.cjs"
+    "test:integration": "node test/integration.cjs",
+    "build:api": "tsc -p tsconfig.json",
+    "web:dev": "npm --prefix web run dev",
+    "dev": "node tools/dev.mjs",
+    "accounts:seed": "ts-node src/seed-accounts.ts",
+    "start:cloud": "node tools/start.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.0",

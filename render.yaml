@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: perkwise-loyalty
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm --prefix web ci && npm run build
+    startCommand: node tools/start.mjs
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_SSL
+        sync: false
+      - key: MANAGER_EMAIL
+        value: andriebacor194@gmail.com
+      - key: MANAGER_PASSWORD
+        sync: false
+      - key: STAFF_EMAIL
+        value: andriebacor79@gmail.com
+      - key: STAFF_PASSWORD
+        sync: false
+      - key: CUSTOMER_EMAIL
+        value: bebekosijazmin021@gmail.com
+      - key: CUSTOMER_PASSWORD
+        sync: false
+      - key: INIT_DATABASE
+        value: true

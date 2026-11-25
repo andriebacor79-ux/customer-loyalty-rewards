@@ -7,3 +7,7 @@ dist/
 .local-certs/
 coverage/
 *.log
+web/node_modules/
+web/dist/
+*.tsbuildinfo
+.credentials/

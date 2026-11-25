@@ -1,6 +1,7 @@
 # Customer Loyalty and Rewards Management System
 
-Version 2.0: aligned with Andrie Bacor's ITEC 116 Activities 3-6 and the final-project requirements. Stack: NestJS 11, TypeORM 0.3, MySQL Community Server 8.4, JWT, bcryptjs and Postman. Seven entities, 27 REST endpoints. The customer and reward resources each provide complete CRUD. Frontend is optional and not included.
+Version 3.0 adds Perkwise, a responsive React frontend with real manager, staff and customer dashboards, member management, points history, rewards, redemptions, notifications and team management. The NestJS/MySQL API retains the Activities 3–6 rules; six additional dashboard/health routes support the frontend. Repository: https://github.com/andriebacor79-ux/customer-loyalty-rewards.
+
 
 Start with START_HERE_TAGALOG.md. docs/LAB_ALIGNMENT.md records the mapping to each lab and explains the few necessary corrections to inconsistent lab examples.
 
@@ -31,8 +32,9 @@ Then run inside the extracted project folder:
 ```sh
 npm ci
 npm run db:setup
+npm --prefix web ci
 npm run build
-npm run start:dev
+npm start
 ```
 
 The API starts at http://localhost:3000/api/v1. `db:setup` explicitly synchronizes entities, adds database CHECK constraints and creates the first Manager only when that email does not already exist. Runtime schema synchronization is disabled. Setup is for a disposable development prototype, not a production migration strategy. Existing passwords are not reset by editing .env.
@@ -142,4 +144,12 @@ Your personal GitHub repository, at least five genuine meaningful development co
 
 ## Production limits
 
-Single store, no frontend/POS/payment integration, no points expiry, no password-reset/refresh-token flow, no account recovery UI, no immutable stock movement ledger, no transaction idempotency key and no distributed rate limiter. Large customer broadcasts use a simple database queue; production would require batching/worker infrastructure, consent/preferences, retries and monitoring. Database migrations/backups and deployment hardening are future work.
+Single store, no POS/payment integration, no points expiry, no password-reset/refresh-token flow, no account recovery UI, no immutable stock movement ledger, no transaction idempotency key and no distributed rate limiter. Large customer broadcasts use a simple database queue; production would require batching/worker infrastructure, consent/preferences, retries and monitoring. Database migrations/backups and deployment hardening are future work.
+
+## Frontend and cloud deployment
+
+After setting up your database, `npm run accounts:seed` creates the three configured role accounts only if their emails do not exist. Choose independent app passwords; these are not Gmail passwords or Google sign-in. Existing passwords are preserved.
+
+`npm run build` builds both API and React. `npm start` serves the website at http://localhost:3000 and the API at /api/v1. For frontend development, keep the API on port 3000 and run `npm run web:dev` in a second terminal. `npm --prefix web test` checks the API client's authentication and outage handling.
+
+See docs/DEPLOYMENT.md and render.yaml for Render. Never commit .env or account passwords. The bundled SQL snapshot has no usable passwords; use a fresh dedicated cloud database for a new deployment.
