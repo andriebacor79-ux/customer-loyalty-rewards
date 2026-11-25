@@ -88,3 +88,9 @@ EmailNotification fields: `{notificationId,customerId,employeeId,notificationTyp
 `{success:false,statusCode,message,errors:[...],timestamp:"ISO-8601"}`.
 
 400 invalid DTO/query or invalid operation fields; 401 missing/invalid/expired JWT or bad login; 403 wrong role/other customer's resource; 404 missing record; 409 duplicate unique field, foreign-key/history restriction, insufficient points/stock, inactive account or forbidden status transition; 429 rate limit; 500 unexpected error with a sanitized response. Successful DELETE has no body.
+
+### Self-service redemption extension
+
+Customers can reserve their own rewards using POST /redemptions `{accountId,rewardId}`. Ownership is enforced inside the locked transaction. PATCH /redemptions/:id `{redemptionStatus:"Cancelled"}` is allowed for the owning customer; Completed remains employee-only. Other members' reservations are forbidden. Pending reservations debit the account and stock; cancellation credits the original debit exactly once. Display reference is PW- followed by redemptionId padded to six digits, and staff must verify the member identity when collecting. GET /dashboard/redemptions?search=PW-000001 lets staff find a reference.
+
+PointsTransaction.EmployeeID is nullable for customer-initiated reservations/refunds. Staff collection attributes an unassigned Redeem transaction to the staff member. Existing staff-created records are preserved.

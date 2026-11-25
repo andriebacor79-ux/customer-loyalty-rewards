@@ -34,3 +34,7 @@ The uploaded student labs, rather than the earlier simplified design, are the ba
 ## Final-project requirements
 
 NestJS, TypeORM, MySQL and JWT remain the required stack. Customer and Reward are the two full CRUD modules. There are 27 method/path combinations, including GET, POST, PUT, PATCH and DELETE. SQL export, technical documentation, Postman collection, setup guide and Tagalog demo script are supplied. The student still provides their personal repository/history, video, screenshots and presentation.
+
+## User-requested self-service extension
+
+The deployed frontend now supports customers reserving their own rewards and cancelling their own pending requests. Employees still verify collection and complete requests. This intentionally extends the original staff-only redemption workflow. The seven-table model is retained; PointsTransaction.EmployeeID becomes nullable so a customer request is not falsely attributed to a staff member. Existing staff API requests remain compatible. See README.md for migration instructions. Earlier PDF and historical test artifacts describe the original workflow; use the current source and API.md for this extension.
