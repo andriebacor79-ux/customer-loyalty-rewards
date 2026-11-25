@@ -1,0 +1,83 @@
+{
+  "checkedAt": "2026-11-25T18:09:54.750Z",
+  "checks": 22,
+  "passed": true,
+  "results": [
+    {
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "path": "/dashboard/overview",
+      "status": 401
+    },
+    {
+      "path": "/dashboard/profile",
+      "status": 200
+    },
+    {
+      "path": "/dashboard/customers",
+      "status": 403
+    },
+    {
+      "path": "/dashboard/customers",
+      "status": 200
+    },
+    {
+      "path": "/email-notifications",
+      "status": 403
+    },
+    {
+      "path": "/dashboard/overview",
+      "status": 200
+    },
+    {
+      "path": "/dashboard/transactions",
+      "status": 200
+    },
+    {
+      "path": "/dashboard/redemptions",
+      "status": 200
+    },
+    {
+      "path": "/dashboard/overview",
+      "status": 200
+    },
+    {
+      "path": "/dashboard/transactions",
+      "status": 200
+    },
+    {
+      "path": "/dashboard/redemptions",
+      "status": 200
+    },
+    {
+      "path": "/dashboard/overview",
+      "status": 200
+    },
+    {
+      "path": "/dashboard/transactions",
+      "status": 200
+    },
+    {
+      "path": "/dashboard/redemptions",
+      "status": 200
+    },
+    {
+      "path": "/dashboard/overview",
+      "status": 200
+    },
+    {
+      "path": "/dashboard/customers?accountStatus=Active&search=Demo",
+      "status": 200
+    }
+  ]
+}
