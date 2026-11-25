@@ -17,13 +17,9 @@ class EmployeesService {
   constructor(private db: DataSource) {}
   async list(q: ListDto) {
     const { page: pg, limit } = page(q);
-    const [data, totalItems] = await this.db
-      .getRepository(Employee)
-      .findAndCount({
-        skip: (pg - 1) * limit,
-        take: limit,
-        order: { employeeId: "DESC" },
-      });
+    const query = this.db.getRepository(Employee).createQueryBuilder('e');
+    if(q.search)query.where('(e.firstName LIKE :search OR e.lastName LIKE :search OR e.email LIKE :search)',{search:'%'+q.search+'%'});
+    const [data,totalItems] = await query.orderBy('e.employeeId','DESC').skip((pg-1)*limit).take(limit).getManyAndCount();
     return { page: pg, limit, totalItems, data };
   }
   async create(d: CreateEmployeeDto) {
