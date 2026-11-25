@@ -10,6 +10,7 @@ class NotificationsController {
   @Get() async list(@Query() q: ListDto) {
     const { page: pg, limit } = page(q);
     const b = this.db.getRepository(EmailNotification).createQueryBuilder("n");
+    if(q.search)b.andWhere('(n.subject LIKE :search OR n.message LIKE :search)',{search:'%'+q.search+'%'});
     if (q.deliveryStatus)
       b.andWhere("n.deliveryStatus=:status", { status: q.deliveryStatus });
     if (q.notificationType)
