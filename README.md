@@ -159,3 +159,9 @@ See docs/DEPLOYMENT.md and render.yaml for Render. Never commit .env or account 
 Perkwise: https://perkwise-loyalty.onrender.com/
 
 The deployed app uses a fresh MySQL database. The Windows database was not migrated automatically. Manager, Staff and Customer sign in with their assigned app credentials; the three Gmail addresses are application identifiers, not Google OAuth logins. Passwords were delivered privately. See docs/DEPLOYMENT.md for verified hosting details and free-plan limits.
+
+## Customer reward redemption (updated flow)
+
+Existing login accounts and staff Postman requests remain valid. Customers may now POST /api/v1/redemptions using only their own accountId and a rewardId. Points and stock are reserved atomically and the result is Pending. The UI displays `PW-` plus the six-digit redemption ID as a reference. It identifies a reservation; it is not a secret authorization code. Staff verifies the member and Pending reservation before handing over the reward and marking Completed. Customers may cancel their own Pending reservation but cannot complete one or change another member's redemption. Cancellation refunds the original points and one stock item exactly once.
+
+To update a local checkout: install dependencies, build, run `npm run db:migrate`, then restart. This narrow MySQL migration makes PointsTransaction.EmployeeID nullable without deleting existing data. A customer-initiated debit or cancellation has no processing employee; a staff member is attributed on collection. Earn and manual Adjust operations remain staff/manager only. Render runs this idempotent migration before startup; runtime schema synchronization stays disabled. The old v1 schema is still unsupported.

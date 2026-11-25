@@ -15,7 +15,8 @@
     "web:dev": "npm --prefix web run dev",
     "dev": "node tools/dev.mjs",
     "accounts:seed": "ts-node src/seed-accounts.ts",
-    "start:cloud": "node tools/start.mjs"
+    "start:cloud": "node tools/start.mjs",
+    "db:migrate": "ts-node src/migrations/customer-redemptions.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.0",
